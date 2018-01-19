@@ -11,9 +11,9 @@ set showmatch
 set ruler
 set number
 set backspace=indent,eol,start
-set lazyredraw
 set mouse=a
 set rtp+=~/.vim/bundle/Vundle.vim
+set lazyredraw
 call vundle#begin()
 
 Plugin 'gmarik/Vundle.vim'
@@ -21,14 +21,12 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'editorconfig/editorconfig-vim'
 Plugin 'git://github.com/scrooloose/syntastic.git'
 Plugin 'git://github.com/scrooloose/nerdtree.git'
-Plugin 'altercation/vim-colors-solarized'
 Plugin 'bling/vim-airline'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'tpope/vim-fugitive'
 Plugin 'kien/ctrlp.vim'
 Plugin 'kchmck/vim-coffee-script'
 Plugin 'groenewege/vim-less'
-Plugin 'sjl/badwolf'
 Plugin 'sjl/gundo.vim'
 Plugin 'rking/ag.vim'
 Plugin 'vim-scripts/indentpython.vim'
@@ -37,13 +35,12 @@ Plugin 'elixir-lang/vim-elixir'
 Plugin 'slashmili/alchemist.vim'
 Plugin 'larrylv/ycm-elixir'
 Plugin 'rust-lang/rust.vim'
+Plugin 'fatih/vim-go'
+Plugin 'altercation/vim-colors-solarized'
 
 call vundle#end()
 filetype plugin indent on
 
-let g:ycm_server_python_interpreter='/usr/bin/python3'
-let g:ycm_python_binary_path='/usr/bin/python3'
-set list
 set listchars=nbsp:¬,tab:»·,trail:·
 set incsearch
 nnoremap <leader><space> :nohlsearch<CR>
@@ -55,10 +52,9 @@ set hlsearch
 map <C-n> :NERDTreeToggle<CR>
 map <C-c><C-c> :CoffeeCompile<CR>
 syntax enable
-let g:solarized_termcolors=256
 set t_Co=256
+colo solarized
 set background=dark
-colorscheme solarized
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#syntastic#enabled = 1
 let g:airline_powerline_fonts = 1
@@ -80,11 +76,29 @@ let g:syntastic_rust_rustc_exe = 'cargo check'
 let g:syntastic_rust_rustc_fname = ''
 let g:syntastic_rust_rustc_args = '--'
 let g:syntastic_rust_checkers = ['rustc']
+let g:syntastic_python_checkers = ['flake8']
+let g:syntastic_python_pylint_post_args = '--msg-template="{path}:{line}:{column}:{C}: [{symbol} {msg_id}] {msg}"'
 " let g:syntastic_elixir_checkers = ['elixir']
 " let g:syntastic_enable_elixir_checker = 1
 let g:ycm_autoclose_preview_window_after_completion=1
-map <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
+map <leader>g :YcmCompleter GoTo<CR>
 let python_highlight_all=1
+let g:ycm_server_python_interpreter='python'
+let g:ycm_python_binary_path = 'python'
+let g:go_autodetect_gopath = 0
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
+
+let g:syntastic_go_checkers = ['golint', 'govet']
+
+" Open go doc in vertical window, horizontal, tab
+au Filetype go nnoremap <leader>v :vsp <CR>:exe "GoDef" <CR>
+au Filetype go nnoremap <leader>s :sp <CR>:exe "GoDef" <CR>
+au Filetype go nnoremap <leader>t :tab <CR>:exe "GoDef" <CR>
+au FileType go let $GOPATH = go#path#Detect()
 
 "python with virtualenv support
 python3 << EOF
