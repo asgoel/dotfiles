@@ -45,7 +45,7 @@ function _python-workon-cwd {
   fi
   # Get absolute path, resolving symlinks
   local PROJECT_ROOT="${PWD:A}"
-  while [[ "$PROJECT_ROOT" != "/" && (! -e "$PROJECT_ROOT/.venv"  || ! -e "$PROJECT_ROOT/venv") \
+  while [[ "$PROJECT_ROOT" != "/" && (! -e "$PROJECT_ROOT/.venv"  || ! -e "$PROJECT_ROOT/venv" || ! -e "$PROJECT_ROOT/env") \
             && ! -d "$PROJECT_ROOT/.git"  && "$PROJECT_ROOT" != "$GIT_REPO_ROOT" ]]; do
     PROJECT_ROOT="${PROJECT_ROOT:h}"
   done
@@ -62,21 +62,21 @@ function _python-workon-cwd {
     ENV_NAME="$(cat "$PROJECT_ROOT/venv")"
   elif [[ -f "$PROJECT_ROOT/venv/bin/activate" ]]; then
     ENV_NAME="$PROJECT_ROOT/venv"
+  elif [[ -f "$PROJECT_ROOT/env/bin/activate" ]]; then
+    ENV_NAME="$PROJECT_ROOT/env"
   elif [[ "$PROJECT_ROOT" != "." ]]; then
     ENV_NAME="${PROJECT_ROOT:t}"
   fi
-  if [[ -n $CD_VIRTUAL_ENV && "$ENV_NAME" != "$CD_VIRTUAL_ENV" ]]; then
+  if [[ -n $CD_VIRTUAL_ENV && "$ENV_NAME" != "$CD_VIRTUAL_ENV" && $PROJECT_ROOT/ != $OLD_PROJECT_ROOT/* ]]; then
     # We've just left the repo, deactivate the environment
     # Note: this only happens if the virtualenv was activated automatically
-    deactivate && unset CD_VIRTUAL_ENV
+    deactivate && unset CD_VIRTUAL_ENV && unset OLD_PROJECT_ROOT
   fi
   if [[ "$ENV_NAME" != "" ]]; then
     # Activate the environment only if it is not already active
-    if [[ "$VIRTUAL_ENV" != "$WORKON_HOME/$ENV_NAME" ]]; then
-      if [[ -e "$WORKON_HOME/$ENV_NAME/bin/activate" ]]; then
-        workon "$ENV_NAME" && export CD_VIRTUAL_ENV="$ENV_NAME"
-      elif [[ -e "$ENV_NAME/bin/activate" ]]; then
-        source $ENV_NAME/bin/activate && export CD_VIRTUAL_ENV="$ENV_NAME"
+    if [[ "$VIRTUAL_ENV" != "$ENV_NAME" ]]; then
+      if [[ -e "$ENV_NAME/bin/activate" ]]; then
+        source $ENV_NAME/bin/activate && export CD_VIRTUAL_ENV="$ENV_NAME" && export OLD_PROJECT_ROOT="$PROJECT_ROOT"
       fi
     fi
   fi
