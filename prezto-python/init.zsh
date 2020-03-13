@@ -45,7 +45,7 @@ function _python-workon-cwd {
   fi
   # Get absolute path, resolving symlinks
   local PROJECT_ROOT="${PWD:A}"
-  while [[ "$PROJECT_ROOT" != "/" && (! -e "$PROJECT_ROOT/.venv"  || ! -e "$PROJECT_ROOT/venv" || ! -e "$PROJECT_ROOT/env") \
+  while [[ "$PROJECT_ROOT" != "/" && (! -e "$PROJECT_ROOT/.venv"  && ! -e "$PROJECT_ROOT/venv" && ! -e "$PROJECT_ROOT/env") \
             && ! -d "$PROJECT_ROOT/.git"  && "$PROJECT_ROOT" != "$GIT_REPO_ROOT" ]]; do
     PROJECT_ROOT="${PROJECT_ROOT:h}"
   done
