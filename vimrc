@@ -54,21 +54,21 @@ Plugin 'bling/vim-airline'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'tpope/vim-fugitive'
 Plugin 'kien/ctrlp.vim'
-Plugin 'kchmck/vim-coffee-script'
 Plugin 'groenewege/vim-less'
 Plugin 'sjl/gundo.vim'
 Plugin 'rking/ag.vim'
 Plugin 'Valloric/YouCompleteMe'
-Plugin 'elixir-lang/vim-elixir'
 Plugin 'slashmili/alchemist.vim'
-Plugin 'larrylv/ycm-elixir'
-Plugin 'rust-lang/rust.vim'
 Plugin 'fatih/vim-go'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'plytophogy/vim-virtualenv'
 Plugin 'w0rp/ale'
 Plugin 'hashivim/vim-terraform.git'
-Plugin 'fisadev/vim-isort'
+" Plugin 'fisadev/vim-isort'
+Plugin 'uber/prototool', { 'rtp': 'vim/prototool' }
+Plugin 'sophacles/vim-bundle-mako'
+Plugin 'tpope/vim-liquid'
+Plugin 'cakebaker/scss-syntax.vim'
 
 call vundle#end()
 filetype plugin indent on
@@ -108,17 +108,26 @@ let g:ale_lint_on_text_changed = 'never'
 let g:ale_set_highlights = 0
 let g:ale_linters = {
 \   'python': ['pylint'],
+\   'go': ['golint'],
+\   'proto': ['prototool-lint'],
 \}
 let g:ale_python_pylint_options = '--rcfile /Users/ashu/.pylintrc'
 let g:ale_fixers = {'python': ['isort']}
 let g:ale_fix_on_save = 1
+let g:ale_lint_on_text_changed = 'never'
 let python_highlight_all=1
 
 " YouCompleteMe settings
 let g:ycm_autoclose_preview_window_after_completion=1
 map <leader>g :YcmCompleter GoTo<CR>
-let g:ycm_server_python_interpreter='python3'
-let g:ycm_python_binary_path = 'python3'
+let g:ycm_python_interpreter_path = ''
+let g:ycm_python_sys_path = []
+let g:ycm_extra_conf_vim_data = [
+  \  'g:ycm_python_interpreter_path',
+  \  'g:ycm_python_sys_path'
+  \]
+let g:ycm_global_ycm_extra_conf = '~/global_extra_conf.py'
+let g:ycm_confirm_extra_conf = 0
 
 " Go settings
 let g:go_autodetect_gopath = 0
