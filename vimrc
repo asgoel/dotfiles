@@ -13,7 +13,7 @@ set wildmenu
 " Change mapleader
 let mapleader=","
 " Smart tabs
-set noet sts=0 sw=2 ts=2
+set noet sts=0 sw=4 ts=4
 set cindent
 set cinoptions=(0,u0,U0
 
@@ -22,6 +22,7 @@ set autoindent
 " Highlight matching braces/parens
 set showmatch
 " Show line length ruler
+set colorcolumn=100
 set ruler
 " Enable line numbers
 set number
@@ -58,20 +59,22 @@ Plugin 'groenewege/vim-less'
 Plugin 'sjl/gundo.vim'
 Plugin 'rking/ag.vim'
 Plugin 'Valloric/YouCompleteMe'
-Plugin 'slashmili/alchemist.vim'
-Plugin 'fatih/vim-go'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'plytophogy/vim-virtualenv'
 Plugin 'w0rp/ale'
 Plugin 'hashivim/vim-terraform.git'
-" Plugin 'fisadev/vim-isort'
-Plugin 'uber/prototool', { 'rtp': 'vim/prototool' }
-Plugin 'sophacles/vim-bundle-mako'
-Plugin 'tpope/vim-liquid'
-Plugin 'cakebaker/scss-syntax.vim'
+Plugin 'vim-scripts/indentpython.vim'
+" Plugin 'vim-syntastic/syntastic'
+Plugin 'jvirtanen/vim-hcl.git'
 
 call vundle#end()
 filetype plugin indent on
+
+" Python specific settings
+au BufNewFile,BufRead *.py silent!
+    \ set autoindent
+    " store the file in UNIX format to avoid weird conersion issues.
+    \ set fileformat=unix
 
 " Enable the solarized theme
 syntax enable
@@ -100,17 +103,21 @@ let g:ctrlp_cmd = 'CtrlP'
 let g:ctrlp_match_window = 'bottom,order:ttb'
 let g:ctrlp_switch_buffer = 0
 let g:ctrlp_working_path_mode = 0
-let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g "" --ignore-dir thirdparty-binaries'
+let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g ""'
+let g:ctrlp_custom_ignore = {
+  \ 'dir': '\v[\/]\.terragrunt-cache$'
+  \ }
 
 " ALE (linting) settings
 let g:ale_lint_on_enter = 0
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_set_highlights = 0
 let g:ale_linters = {
-\   'python': ['pylint'],
+\   'python': ['flake8'],
 \   'go': ['golint'],
 \   'proto': ['prototool-lint'],
 \}
+let g:ale_python_flake8_options = '--config /Users/ashu/Documents/api_backend/.flake8'
 let g:ale_python_pylint_options = '--rcfile /Users/ashu/.pylintrc'
 let g:ale_fixers = {'python': ['isort']}
 let g:ale_fix_on_save = 1
@@ -129,14 +136,6 @@ let g:ycm_extra_conf_vim_data = [
 let g:ycm_global_ycm_extra_conf = '~/global_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 
-" Go settings
-let g:go_autodetect_gopath = 0
-let g:go_highlight_functions = 1
-let g:go_highlight_methods = 1
-let g:go_highlight_structs = 1
-let g:go_highlight_operators = 1
-let g:go_highlight_build_constraints = 1
-
 " Auto activate virtualenv in vim
 let g:virtualenv_auto_activate = 1
 
@@ -147,8 +146,14 @@ let g:terraform_fmt_on_save = 1
 " isort vim config
 let g:vim_isort_python_version = 'python3'
 
-" Open go doc in vertical window, horizontal, tab
-au Filetype go nnoremap <leader>v :vsp <CR>:exe "GoDef" <CR>
-au Filetype go nnoremap <leader>s :sp <CR>:exe "GoDef" <CR>
-au Filetype go nnoremap <leader>t :tab <CR>:exe "GoDef" <CR>
-au FileType go let $GOPATH = go#path#Detect()
+" Syntastic settings
+" set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+" let g:syntastic_always_populate_loc_list = 1
+" let g:syntastic_auto_loc_list = 1
+" let g:syntastic_check_on_open = 0
+" let g:syntastic_check_on_wq = 1
+autocmd BufNewFile,BufRead *.tf     set filetype=terraform
+autocmd BufNewFile,BufRead *.tfvars set filetype=terraform
